@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ЧВК «Фант, Адмирал»</title>
+
+<style>
+
+/* =========================================================
+   ШРИФТ
+========================================================= */
+
+@font-face {
+    font-family: "Bombardier";
+    src: url("Bombardier.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+/* =========================================================
+   ПЕРЕМЕННЫЕ
+========================================================= */
+
+:root {
+    --bg-main: #00394d;
+    --bg-dark: #000f1a;
+    --panel: #061b2b;
+
+    --border: #075b91;
+    --border-bright: #00aeea;
+
+    --cyan: #00d9ff;
+    --cyan-soft: #8aeaff;
+
+    --text: #ffffff;
+    --muted: #a9c4d1;
+
+    --danger: #f43f5e;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    color: var(--text);
+
+    background:
+        linear-gradient(
+            rgba(0, 229, 255, 0.018) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 229, 255, 0.018) 1px,
+            transparent 1px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.14) 0px,
+            rgba(0, 0, 0, 0.14) 1px,
+            transparent 1px,
+            transparent 4px
+        ),
+        #00394d;
+
+    background-size:
+        32px 32px,
+        32px 32px,
+        100% 4px,
+        100% 100%;
+
+    overflow-x: hidden;
+}
+
+button,
+a {
+    font-family: inherit;
+}
+
+
+/* =========================================================
+   CRT-МОНИТОР
+   ВАЖНО:
+   находится поверх всего,
+   но НЕ блокирует мышь
+========================================================= */
+
+#crt-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    pointer-events: none;
+
+    z-index: 99999;
+
+    overflow: hidden;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.16) 2px,
+            rgba(0, 0, 0, 0.16) 4px
+        ),
+
+        repeating-linear-gradient(
+            to right,
+            rgba(0, 120, 255, 0.018) 0px,
+            rgba(0, 120, 255, 0.018) 1px,
+            transparent 1px,
+            transparent 4px
+        ),
+
+        radial-gradient(
+            ellipse at center,
+            transparent 42%,
+            rgba(0, 0, 0, 0.08) 65%,
+            rgba(0, 0, 0, 0.35) 100%
+        );
+
+    opacity: 0.65;
+
+    animation: crtFlicker 6.5s steps(7, end) infinite;
+}
+
+#crt-overlay::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 45%,
+            rgba(0, 0, 0, 0.12) 72%,
+            rgba(0, 0, 0, 0.45) 100%
+        );
+
+    box-shadow:
+        inset 0 0 100px 20px rgba(0, 0, 0, 0.65);
+}
+
+@keyframes crtFlicker {
+    0%,
+    100% {
+        opacity: 0.65;
+    }
+
+    18% {
+        opacity: 0.61;
+    }
+
+    19% {
+        opacity: 0.65;
+    }
+
+    47% {
+        opacity: 0.60;
+    }
+
+    48% {
+        opacity: 0.65;
+    }
+
+    72% {
+        opacity: 0.62;
+    }
+
+    73% {
+        opacity: 0.65;
+    }
+
+    91% {
+        opacity: 0.59;
+    }
+
+    92% {
+        opacity: 0.65;
+    }
+}
+
+
+/* =========================================================
+   ЗАГОЛОВКИ
+========================================================= */
+
+h1,
+h2,
+h3,
+h4 {
+    font-family:
+        "Bombardier",
+        Impact,
+        sans-serif;
+
+    font-weight: normal;
+}
+
+
+/* =========================================================
+   ГЛАВНОЕ МЕНЮ
+========================================================= */
+
+#main-menu {
+    position: relative;
+
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+}
+
+
+/* =========================================================
+   ФОН ГЛАВНОЙ СТРАНИЦЫ
+   Картинка растянута на весь сайт и отцентрована
+========================================================= */
+
+.bg-layer {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    background: var(--bg-dark);
+}
+
+.bg-layer img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    max-width: none;
+    max-height: none;
+
+    object-fit: cover;
+    object-position: center center;
+
+    filter: none;
+    opacity: 1;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
+}
+
+/* Лёгкое затемнение, чтобы меню читалось на любом фоне */
+
+.bg-layer::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 10, 18, 0.30) 0%,
+            rgba(0, 10, 18, 0.45) 50%,
+            rgba(0, 10, 18, 0.72) 100%
+        );
+}
+
+
+.main-menu {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    max-width: 1000px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    animation: fadeIn 0.4s steps(4, end);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   ГЛАВНЫЙ ЗАГОЛОВОК
+========================================================= */
+
+.main-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+
+    letter-spacing: 4px;
+
+    text-align: center;
+    text-transform: uppercase;
+
+    color: #ffffff;
+
+    margin-bottom: 30px;
+
+    text-shadow:
+        2px 2px 0 rgba(0, 0, 0, 0.45),
+        0 0 12px rgba(0, 229, 255, 0.12);
+}
+
+
+/* =========================================================
+   МЕНЮ
+========================================================= */
+
+.menu-grid {
+    width: 100%;
+    max-width: 760px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.menu-btn {
+    min-height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 18px 22px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 22, 32, 0.92),
+            rgba(0, 12, 20, 0.94)
+        );
+
+    border: 2px solid #08718f;
+    border-radius: 3px;
+
+    color: #ffffff;
+
+    font-family:
+        "Bombardier",
+        Impact,
+        sans-serif;
+
+    font-size: 1.05rem;
+
+    letter-spacing: 1.5px;
+
+    text-align: center;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background 0.08s linear,
+        border-color 0.08s linear,
+        color 0.08s linear,
+        transform 0.08s linear,
+        box-shadow 0.08s linear;
+}
+
+.menu-btn:hover {
+    background:
+        linear-gradient(
+            180deg,
+            #06394a,
+            #052b39
+        );
+
+    border-color: #00b9d8;
+
+    color: #00e5ff;
+
+    transform: translate(-1px, -1px);
+
+    box-shadow:
+        3px 3px 0 rgba(0, 185, 216, 0.16);
+}
+
+.menu-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: none;
+}
+
+.menu-btn.full-width {
+    grid-column: 1 / -1;
+}
+
+.danger-btn {
+    border-color: rgba(244, 63, 94, 0.7);
+    color: #ffb1bd;
+}
+
+.danger-btn:hover {
+    border-color: var(--danger);
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            180deg,
+            #3a0d18,
+            #240810
+        );
+
+    box-shadow:
+        3px 3px 0 rgba(244, 63, 94, 0.18);
+}
+
+
+/* =========================================================
+   ВНУТРЕННИЕ СТРАНИЦЫ
+========================================================= */
+
+.page {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    background: #000000;
+
+    z-index: 10;
+}
+
+.page.active {
+    display: block;
+
+    animation:
+        pageIn 0.24s steps(4, end);
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform: scale(0.99);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* =========================================================
+   ФОН УСТАВА
+========================================================= */
+
+#ustav-page {
+    background-color: #000000;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#ustav-page.theme-default {
+    background-image:
+        linear-gradient(
+            90deg,
+            #000000 0%,
+            #000000 36%,
+            rgba(0, 0, 0, 1) 44%,
+            rgba(0, 0, 0, 0.97) 50%,
+            rgba(0, 0, 0, 0.85) 57%,
+            rgba(0, 0, 0, 0.60) 66%,
+            rgba(0, 0, 0, 0.28) 76%,
+            rgba(0, 0, 0, 0) 88%
+        ),
+        url("bg-default.png");
+}
+
+#ustav-page.theme-med {
+    background-image:
+        linear-gradient(
+            90deg,
+            #000000 0%,
+            #000000 36%,
+            rgba(0, 0, 0, 1) 44%,
+            rgba(0, 0, 0, 0.97) 50%,
+            rgba(0, 0, 0, 0.85) 57%,
+            rgba(0, 0, 0, 0.60) 66%,
+            rgba(0, 0, 0, 0.28) 76%,
+            rgba(0, 0, 0, 0) 88%
+        ),
+        url("bg-med.png");
+}
+
+#ustav-page.theme-sec {
+    background-image:
+        linear-gradient(
+            90deg,
+            #000000 0%,
+            #000000 36%,
+            rgba(0, 0, 0, 1) 44%,
+            rgba(0, 0, 0, 0.97) 50%,
+            rgba(0, 0, 0, 0.85) 57%,
+            rgba(0, 0, 0, 0.60) 66%,
+            rgba(0, 0, 0, 0.28) 76%,
+            rgba(0, 0, 0, 0) 88%
+        ),
+        url("bg-sec.png");
+}
+
+#ustav-page.theme-eng {
+    background-image:
+        linear-gradient(
+            90deg,
+            #000000 0%,
+            #000000 36%,
+            rgba(0, 0, 0, 1) 44%,
+            rgba(0, 0, 0, 0.97) 50%,
+            rgba(0, 0, 0, 0.85) 57%,
+            rgba(0, 0, 0, 0.60) 66%,
+            rgba(0, 0, 0, 0.28) 76%,
+            rgba(0, 0, 0, 0) 88%
+        ),
+        url("bg-eng.png");
+}
+
+
+/* =========================================================
+   ШАПКА
+========================================================= */
+
+.page-header {
+    position: relative;
+
+    width: 100%;
+    height: 90px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 35px;
+
+    border-bottom:
+        2px solid rgba(7, 91, 145, 0.65);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.90),
+            rgba(0, 0, 0, 0)
+        );
+
+    z-index: 5;
+}
+
+.page-title {
+    color: var(--cyan);
+
+    font-family:
+        "Bombardier",
+        Impact,
+        sans-serif;
+
+    font-size:
+        clamp(1.4rem, 3vw, 2rem);
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+    text-shadow:
+        1px 0 rgba(0, 120, 255, 0.22),
+        -1px 0 rgba(0, 220, 255, 0.14),
+        0 0 10px rgba(0, 200, 255, 0.12);
+}
+
+
+/* =========================================================
+   НАЗАД
+========================================================= */
+
+.back-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 120px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    background:
+        rgba(0, 0, 0, 0.78);
+
+    border:
+        2px solid var(--border);
+
+    border-radius: 4px;
+
+    color: var(--muted);
+
+    font-family:
+        "Bombardier",
+        Impact,
+        sans-serif;
+
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+    transition:
+        color 0.1s steps(2, end),
+        border-color 0.1s steps(2, end),
+        background 0.1s steps(2, end),
+        transform 0.1s steps(2, end);
+}
+
+.back-btn:hover {
+    color: #ffffff;
+
+    border-color: var(--cyan);
+
+    background:
+        rgba(0, 150, 220, 0.10);
+
+    transform: translateX(-2px);
+}
+
+.back-btn:active {
+    transform: translateX(2px);
+}
+
+
+/* =========================================================
+   КОНТЕНТ УСТАВА
+========================================================= */
+
+.article-content {
+    position: absolute;
+
+    top: 90px;
+    bottom: 0;
+    left: 0;
+
+    width: 50vw;
+
+    padding:
+        10px 55px 60px 45px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background:
+        linear-gradient(
+            90deg,
+            #000000 0%,
+            #000000 82%,
+            rgba(0, 0, 0, 0.98) 90%,
+            rgba(0, 0, 0, 0) 100%
+        );
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        var(--border)
+        #00101b;
+
+    z-index: 3;
+}
+
+.article-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.article-content::-webkit-scrollbar-track {
+    background: #00101b;
+}
+
+.article-content::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+}
+
+.article-content::-webkit-scrollbar-thumb:hover {
+    background: var(--cyan);
+}
+
+
+/* =========================================================
+   ТЕКСТ УСТАВА
+========================================================= */
+
+.scroll-section {
+    width: 100%;
+    margin-bottom: 65px;
+}
+
+.article-content h3 {
+    position: relative;
+
+    color: var(--cyan);
+
+    font-size: 1.35rem;
+
+    letter-spacing: 1.5px;
+
+    margin:
+        32px 0 14px;
+
+    padding-left: 14px;
+
+    line-height: 1.25;
+}
+
+.article-content h3::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+
+    width: 3px;
+
+    background: var(--cyan);
+
+    box-shadow:
+        0 0 8px rgba(0, 210, 255, 0.4);
+}
+
+.article-content h4 {
+    color: #ffffff;
+
+    font-size: 1rem;
+
+    letter-spacing: 0.7px;
+
+    margin:
+        20px 0 9px;
+}
+
+.article-content p {
+    color: #ffffff;
+
+    font-size: 0.96rem;
+
+    line-height: 1.7;
+
+    margin-bottom: 13px;
+}
+
+.article-content strong {
+    color: var(--cyan-soft);
+}
+
+
+/* =========================================================
+   ЭКСПЕДИЦИЯ
+========================================================= */
+
+.expedition-info {
+    margin-top: 20px;
+
+    padding: 18px;
+
+    border-left:
+        3px solid var(--cyan);
+
+    background:
+        rgba(0, 60, 100, 0.25);
+
+    border-top:
+        1px solid rgba(7, 91, 145, 0.4);
+
+    border-bottom:
+        1px solid rgba(7, 91, 145, 0.4);
+
+    box-shadow:
+        inset 0 0 20px
+        rgba(0, 100, 180, 0.04);
+}
+
+.expedition-info p {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   ШТАБ
+========================================================= */
+
+.simple-page {
+    width: 100%;
+    height: 100%;
+
+    overflow-y: auto;
+
+    padding:
+        110px 40px 40px;
+
+    background:
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(0, 190, 255, 0.08),
+            transparent 35%
+        );
+}
+
+.simple-page-inner {
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+}
+
+.simple-page-title {
+    color: var(--cyan);
+
+    font-family:
+        "Bombardier",
+        Impact,
+        sans-serif;
+
+    font-size: 2rem;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 30px;
+
+    text-align: center;
+}
+
+.staff-grid {
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 15px;
+}
+
+.staff-btn {
+    min-height: 90px;
+}
+
+
+/* =========================================================
+   МОБИЛЬНАЯ ВЕРСИЯ
+========================================================= */
+
+@media (max-width: 800px) {
+
+    #main-menu {
+        padding: 20px 12px;
+    }
+
+    .main-title {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+    }
+
+    .menu-btn.full-width {
+        grid-column: auto;
+    }
+
+    .page-header {
+        height: 75px;
+        padding: 14px 15px;
+    }
+
+    .page-title {
+        font-size: 1.05rem;
+        max-width: 65%;
+        line-height: 1.2;
+    }
+
+    .back-btn {
+        width: 95px;
+        height: 38px;
+        font-size: 0.75rem;
+    }
+
+    .article-content {
+        top: 75px;
+
+        width: 100%;
+
+        padding:
+            10px 25px 50px 20px;
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(0, 0, 0, 0.98),
+                rgba(0, 0, 0, 0.82)
+            );
+    }
+
+    #ustav-page.theme-default,
+    #ustav-page.theme-med,
+    #ustav-page.theme-sec,
+    #ustav-page.theme-eng {
+        background-position: center;
+    }
+
+    .article-content h3 {
+        font-size: 1.15rem;
+    }
+
+    .article-content p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .staff-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .simple-page {
+        padding:
+            95px 15px 25px;
+    }
+}
+
+
+@media (max-width: 450px) {
+
+    .main-title {
+        font-size: 1.45rem;
+    }
+
+    .menu-btn {
+        min-height: 62px;
+        font-size: 0.9rem;
+        padding: 15px;
+    }
+
+    .article-content {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     CRT — ВСЕГДА ПОВЕРХ САЙТА
+========================================================= -->
+
+<div id="crt-overlay"></div>
+
+
+<!-- =========================================================
+     ГЛАВНОЕ МЕНЮ
+========================================================= -->
+
+<main id="main-menu">
+
+    <!-- Фоновая картинка, растянутая на весь сайт -->
+    <div class="bg-layer" aria-hidden="true">
+        <img
+            src="logo.png"
+            alt=""
+            onerror="this.src='1000012145.png';"
+        >
+    </div>
+
+
+    <div class="main-menu">
+
+        <header>
+
+            <h1 class="main-title">
+                ЧВК «Фант, Адмирал»
+            </h1>
+
+        </header>
+
+
+        <nav class="menu-grid">
+
+            <button
+                type="button"
+                class="menu-btn"
+                onclick="showPage('ustav-page')"
+            >
+                Устав
+            </button>
+
+
+            <a
+                href="https://docs.google.com/spreadsheets/d/1uCmrYbUyeG7dIGQ-ET-l0TOywzvULUCCMuS5WryC5yw/edit?gid=0#gid=0"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="menu-btn"
+            >
+                Таблица мёртвых
+            </a>
+
+
+            <button
+                type="button"
+                class="menu-btn"
+                onclick="showPage('shtab-page')"
+            >
+                Штаб
+            </button>
+
+
+            <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLScojmwu5O6C-hhrFXqiNHFcpetMI_MPrqJHL1pHJSP2zYLa9g/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="menu-btn danger-btn"
+            >
+                Жалобы и предложения
+            </a>
+
+
+            <a
+                href="https://kostarikob.github.io/Barotrauma_Info/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="menu-btn full-width"
+            >
+                Справочник по игре
+            </a>
+
+        </nav>
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     УСТАВ
+========================================================= -->
+
+<section
+    id="ustav-page"
+    class="page theme-default"
+>
+
+    <div class="page-header">
+
+        <h2 class="page-title">
+            Устав ЧВК «Фант, Адмирал»
+        </h2>
+
+        <button
+            type="button"
+            class="back-btn"
+            onclick="showPage('main-menu')"
+        >
+            Назад
+        </button>
+
+    </div>
+
+
+    <div
+        class="article-content"
+        id="ustav-scroll-container"
+    >
+
+        <div
+            class="scroll-section"
+            data-theme="theme-default"
+        >
+
+            <h3>
+                Глава 1. Общие положения
+            </h3>
+
+            <p>
+                Настоящий устав частной военной компании
+                «Фант, Адмирал» (далее — компания)
+                определяет порядок несения военной службы
+                личным составом компании.
+            </p>
+
+            <p>
+                Устав является обязательным к исполнению
+                всем личным составом.
+            </p>
+
+
+            <h3>
+                Глава 2. Организационная структура компании
+            </h3>
+
+            <h4>
+                Раздел 1. Органы управления
+            </h4>
+
+            <p>
+                Органы управления организации обеспечивают
+                непрерывное оперативное руководство и
+                всесторонний контроль за её деятельностью.
+                Собственником организации является
+                «wornik_inc» (далее — Учредитель), который
+                осуществляет высшее руководство и определяет
+                основные направления функционирования.
+            </p>
+
+            <p>
+                Исполнительным органом является штаб,
+                обеспечивающий реализацию решений Учредителя
+                и действующий под его непосредственным
+                командованием.
+            </p>
+
+
+            <h4>
+                Раздел 2. Воинские звания
+            </h4>
+
+            <p>
+                Воинские звания устанавливаются для определения
+                уровня профессионального опыта, знания порядка
+                несения службы, степени вовлечённости в развитие
+                организации и служебного авторитета личного состава.
+            </p>
+
+            <p>
+                Звание капитана присваивается и лишается
+                исключительно Учредителем.
+            </p>
+
+
+            <h4>
+                Раздел 3. Корабельные должности
+            </h4>
+
+            <p>
+                Корабельные должности имеют приоритет над
+                воинскими званиями и предназначены для
+                распределения служебных обязанностей и
+                установления иерархии подчинения на судне.
+            </p>
+
+
+            <h3>
+                Глава 3. Права и обязанности
+            </h3>
+
+            <h4>
+                Раздел 1. Общие права и обязанности
+            </h4>
+
+            <p>
+                Личный состав имеет право получать средства
+                индивидуальной защиты: скафандр, кислородную
+                маску, кислородный баллон и иные необходимые
+                средства.
+            </p>
+
+            <p>
+                Обязанности личного состава: соблюдать устав,
+                проходить инструктаж, защищать интересы компании,
+                бережно относиться к имуществу и здоровью.
+            </p>
+
+
+            <h4>
+                Раздел 2. Штабные должности
+            </h4>
+
+            <p>
+                Учредитель принимает стратегические решения,
+                вносит изменения в устав и присваивает звания.
+            </p>
+
+            <p>
+                Штабные служащие рассматривают заявления,
+                проводят устные собеседования и КМБ.
+            </p>
+
+
+            <h4>
+                Раздел 3. Корабельные должности
+            </h4>
+
+            <p>
+                Капитан управляет судном и задачами.
+                Командир службы безопасности организует досмотр,
+                содержание под стражей и охрану.
+            </p>
+
+            <p>
+                Командир экспедиции руководит высадками.
+                Командир медицинской службы отвечает за здоровье
+                и реанимацию.
+            </p>
+
+            <p>
+                Командир инженерно-механической службы отвечает
+                за реактор и ремонт корпуса.
+            </p>
+
+
+            <h3>
+                Глава 4. Дисциплина и безопасность
+            </h3>
+
+            <p>
+                Члены экипажа обязаны неукоснительно соблюдать
+                субординацию.
+            </p>
+
+            <p>
+                Категорически запрещены распитие алкоголя,
+                явка в нетрезвом виде, воровство и клоунада.
+            </p>
+
+            <p>
+                Курение допускается исключительно в медицинских
+                целях под наблюдением.
+            </p>
+
+
+            <h3>
+                Глава 5. Дисциплинарная ответственность
+            </h3>
+
+            <p>
+                За нарушение дисциплины применяются устные
+                выговоры, карцер или отстранение.
+            </p>
+
+            <p>
+                Накопление трёх строгих выговоров влечёт
+                увольнение без возможности восстановления.
+            </p>
+
+            <p>
+                Физическую силу и оружие принудительно могут
+                применять только сотрудники службы безопасности.
+            </p>
+
+
+            <h3>
+                Глава 6. Приём челнока и личного состава
+            </h3>
+
+            <p>
+                Личный состав челнока обязан находиться на
+                нулевом (0) канале связи, устанавливать связь
+                в радиусе 350 м и докладывать капитану
+                по установленной форме.
+            </p>
+
+            <p>
+                Стыковка проводится по инициативе судна.
+            </p>
+
+        </div>
+
+
+        <div
+            class="scroll-section"
+            data-theme="theme-med"
+        >
+
+            <h3>
+                Глава 7. Проведение вводного инструктажа
+            </h3>
+
+            <p>
+                Новоприбывшие военнослужащие, не подписавшие
+                контракт, обязаны пройти вводный инструктаж.
+            </p>
+
+            <p>
+                После прибытия на капитанский мостик
+                новоприбывшие проходят инструктаж капитана,
+                после чего передаются командиру соответствующей
+                службы — безопасности, медицины или инженерной
+                службы — для детального обучения специфике работы.
+            </p>
+
+        </div>
+
+
+        <div
+            class="scroll-section"
+            data-theme="theme-sec"
+        >
+
+            <h3>
+                Глава 8. Ношение военной формы
+            </h3>
+
+            <p>
+                Личный состав обязан соблюдать правила ношения
+                и хранения военной формы.
+            </p>
+
+            <p>
+                Головные уборы и форма должны соответствовать
+                занимаемой должности и званию.
+            </p>
+
+
+            <h3>
+                Глава 9. Обеспечение связи и коммуникаций
+            </h3>
+
+            <p>
+                Все разговоры на судне должны быть по существу.
+            </p>
+
+            <p>
+                Приоритет передачи информации:
+                капитан, командир экспедиции,
+                командир службы безопасности,
+                командиры других служб,
+                личный состав.
+            </p>
+
+            <p>
+                Частоты:
+                0-я — челнок,
+                1-я — внутренняя,
+                9-я — экспедиции.
+            </p>
+
+        </div>
+
+
+        <div
+            class="scroll-section"
+            data-theme="theme-eng"
+        >
+
+            <h3>
+                Глава 10. Бюджетирование
+            </h3>
+
+            <p>
+                Бюджет служб формируется и распределяется
+                капитаном и командирами служб на основании
+                текущих потребностей.
+            </p>
+
+
+            <h3>
+                Глава 11. Обращение с вооружением
+            </h3>
+
+            <p>
+                Все виды оружия хранятся в складских помещениях
+                службы безопасности или защищённых хранилищах
+                медицинской службы.
+            </p>
+
+            <p>
+                Ношение и закупка оружия разрешены только
+                службе безопасности либо медицинской службе
+                для химических и биологических средств.
+            </p>
+
+            <p>
+                Ядерное оружие без приказа капитана
+                строго запрещено.
+            </p>
+
+
+            <h3>
+                Глава 12. Экспедиционная деятельность
+            </h3>
+
+            <p>
+                Под экспедицией понимаются мероприятия,
+                проводимые за пределами судна: добыча руды,
+                зачистка маяков и обломков, а также борьба
+                с Таламусом.
+            </p>
+
+            <p>
+                Каждый участник экспедиции обязан иметь
+                скафандр с кислородными баллонами и маяк.
+            </p>
+
+
+            <div class="expedition-info">
+
+                <p>
+                    <strong>Типы экспедиций:</strong>
+                    перед выходом командир экспедиции определяет
+                    тип задачи, состав группы, необходимое
+                    оборудование и порядок возвращения на судно.
+                    Подробные требования к конкретной экспедиции
+                    доводятся до личного состава перед высадкой.
+                </p>
+
+            </div>
+
+
+            <h3>
+                Глава 13. Продвижение по службе
+            </h3>
+
+            <p>
+                Повышение в званиях и увольнения осуществляются
+                исключительно капитаном на основании знаний
+                устава, соблюдения дисциплины и активности
+                в штабе.
+            </p>
+
+
+            <h3>
+                Глава 14. Награждение личного состава
+            </h3>
+
+            <p>
+                За исключительные заслуги личный состав
+                награждается орденами («Европа»,
+                «Конрад Цузе») и именными медалями
+                («Гиппократ», «Суворов»,
+                «Галилео Галилей» и др.)
+                по решению Учредителя.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     ШТАБ
+========================================================= -->
+
+<section
+    id="shtab-page"
+    class="page"
+>
+
+    <div class="page-header">
+
+        <h2 class="page-title">
+            Командный штаб
+        </h2>
+
+        <button
+            type="button"
+            class="back-btn"
+            onclick="showPage('main-menu')"
+        >
+            Назад
+        </button>
+
+    </div>
+
+
+    <div class="simple-page">
+
+        <div class="simple-page-inner">
+
+            <h2 class="simple-page-title">
+                Документы штаба
+            </h2>
+
+
+            <div class="staff-grid">
+
+                <a
+                    href="https://docs.google.com/forms/d/1550zdWFZa-KPdcQ-2Mna3fsEslwkadsGdgDZcZo1M24/edit"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="menu-btn staff-btn"
+                >
+                    Заявления на службу
+                </a>
+
+
+                <a
+                    href="https://docs.google.com/spreadsheets/d/1Md3AS3Rjy9iimaXr5WKlpeQDcnMR0-toleuz8nnxCrU/edit?gid=1233160952#gid=1233160952"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="menu-btn staff-btn"
+                >
+                    База данных
+                </a>
+
+
+                <a
+                    href="https://docs.google.com/spreadsheets/d/1BIRlWxhlqeb_CGY2kB7BsWvpoI8tqQuvlyK6DTy7Ebk/edit?gid=1376975116#gid=1376975116"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="menu-btn staff-btn"
+                >
+                    Активность
+                </a>
+
+
+                <a
+                    href="https://drive.google.com/drive/folders/1q1EXOgPhHTrT3zCOSL4oQvwEPVj-dSb8"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="menu-btn staff-btn"
+                >
+                    Порядок проведения интервью
+                    и материал для лекций
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+/*
+ * =========================================================
+ * ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ
+ * =========================================================
+ *
+ * Здесь специально нет сложной логики.
+ *
+ * main-menu = главное меню
+ * page      = внутренняя страница
+ */
+
+function showPage(pageId) {
+
+    const mainMenu =
+        document.getElementById("main-menu");
+
+    const pages =
+        document.querySelectorAll(".page");
+
+
+    /* Сначала скрываем все внутренние страницы */
+
+    pages.forEach(function(page) {
+        page.classList.remove("active");
+    });
+
+
+    /* =====================================================
+       ВОЗВРАТ В ГЛАВНОЕ МЕНЮ
+    ===================================================== */
+
+    if (pageId === "main-menu") {
+
+        mainMenu.style.display = "flex";
+
+        document.body.style.overflow = "auto";
+
+        return;
+    }
+
+
+    /* =====================================================
+       ОТКРЫТИЕ ВНУТРЕННЕЙ СТРАНИЦЫ
+    ===================================================== */
+
+    const targetPage =
+        document.getElementById(pageId);
+
+
+    if (!targetPage) {
+        console.error(
+            "Страница не найдена:",
+            pageId
+        );
+
+        return;
+    }
+
+
+    mainMenu.style.display = "none";
+
+    targetPage.classList.add("active");
+
+    document.body.style.overflow = "hidden";
+
+
+    /* =====================================================
+       УСТАВ — ВСЕГДА НАЧИНАЕМ С НАЧАЛА
+    ===================================================== */
+
+    if (pageId === "ustav-page") {
+
+        const container =
+            document.getElementById(
+                "ustav-scroll-container"
+            );
+
+        if (container) {
+            container.scrollTop = 0;
+        }
+
+        updateThemeOnScroll();
+    }
+}
+
+
+/* =========================================================
+   СМЕНА ФОНА УСТАВА ПРИ ПРОКРУТКЕ
+========================================================= */
+
+const ustavContainer =
+    document.getElementById(
+        "ustav-scroll-container"
+    );
+
+const ustavPage =
+    document.getElementById(
+        "ustav-page"
+    );
+
+const sections =
+    document.querySelectorAll(
+        "#ustav-scroll-container .scroll-section"
+    );
+
+
+function updateThemeOnScroll() {
+
+    if (!ustavContainer || !ustavPage) {
+        return;
+    }
+
+
+    const containerRect =
+        ustavContainer.getBoundingClientRect();
+
+
+    let currentTheme =
+        "theme-default";
+
+
+    sections.forEach(function(section) {
+
+        const rect =
+            section.getBoundingClientRect();
+
+
+        const position =
+            rect.top -
+            containerRect.top;
+
+
+        if (
+            position <=
+            containerRect.height * 0.42
+        ) {
+
+            currentTheme =
+                section.dataset.theme ||
+                "theme-default";
+        }
+
+    });
+
+
+    ustavPage.classList.remove(
+        "theme-default",
+        "theme-med",
+        "theme-sec",
+        "theme-eng"
+    );
+
+
+    ustavPage.classList.add(
+        currentTheme
+    );
+}
+
+
+if (ustavContainer) {
+
+    ustavContainer.addEventListener(
+        "scroll",
+        updateThemeOnScroll,
+        {
+            passive: true
+        }
+    );
+}
+
+
+/* =========================================================
+   ESC — НАЗАД
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key !== "Escape") {
+            return;
+        }
+
+
+        const activePage =
+            document.querySelector(
+                ".page.active"
+            );
+
+
+        if (activePage) {
+            showPage("main-menu");
+        }
+
+    }
+);
+
+
+/* =========================================================
+   НАЧАЛЬНОЕ СОСТОЯНИЕ
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        /*
+         * Главное меню показывается.
+         * Внутренние страницы скрыты.
+         */
+
+        document.getElementById(
+            "main-menu"
+        ).style.display = "flex";
+
+
+        document.body.style.overflow =
+            "auto";
+
+    }
+);
+
+</script>
+
+</body>
+</html>
